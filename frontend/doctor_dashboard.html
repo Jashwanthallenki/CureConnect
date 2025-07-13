@@ -1,0 +1,717 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DocStat Platform - Doctor Interface</title>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: system-ui, -apple-system, sans-serif;
+        }
+
+        body {
+            background-color: rgb(243, 244, 246);
+            min-height: 100vh;
+        }
+
+        .dashboard {
+            padding: 1.5rem;
+        }
+
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .doctor-name {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: rgb(31, 41, 55);
+        }
+
+        .header-actions {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .icon-button {
+            position: relative;
+            padding: 0.5rem;
+            border-radius: 9999px;
+            background: none;
+            border: none;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+
+        .icon-button:hover {
+            background-color: rgb(229, 231, 235);
+        }
+
+        .notification-badge {
+            position: absolute;
+            top: 0;
+            right: 0;
+            background-color: rgb(239, 68, 68);
+            color: white;
+            width: 1.25rem;
+            height: 1.25rem;
+            border-radius: 9999px;
+            font-size: 0.75rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        nav {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 1.5rem;
+            overflow-x: auto;
+        }
+
+        .nav-button {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem 1rem;
+            border-radius: 0.5rem;
+            border: none;
+            cursor: pointer;
+            transition: all 0.2s;
+            background-color: white;
+            color: rgb(55, 65, 81);
+        }
+
+        .nav-button:hover {
+            background-color: rgb(243, 244, 246);
+        }
+
+        .nav-button.active {
+            background-color: rgb(59, 130, 246);
+            color: white;
+        }
+
+        .overview-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .stats-card {
+            background-color: white;
+            border-radius: 0.75rem;
+            padding: 1.5rem;
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+        }
+
+        .stats-card h2 {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            color: rgb(31, 41, 55);
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1rem;
+        }
+
+        .stat-item {
+            padding: 1rem;
+            border-radius: 0.5rem;
+        }
+
+        .stat-item.blue {
+            background-color: rgb(239, 246, 255);
+        }
+
+        .stat-item.green {
+            background-color: rgb(240, 253, 244);
+        }
+
+        .stat-item.red {
+            background-color: rgb(254, 242, 242);
+        }
+
+        .stat-item.yellow {
+            background-color: rgb(254, 249, 195);
+        }
+
+        .stat-label {
+            font-size: 0.875rem;
+            color: rgb(75, 85, 99);
+        }
+
+        .stat-value {
+            font-size: 1.5rem;
+            font-weight: 700;
+        }
+
+        .stat-value.blue {
+            color: rgb(37, 99, 235);
+        }
+
+        .stat-value.green {
+            color: rgb(22, 163, 74);
+        }
+
+        .stat-value.red {
+            color: rgb(220, 38, 38);
+        }
+
+        .stat-value.yellow {
+            color: rgb(202, 138, 4);
+        }
+
+        .appointments-list {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .appointment-card {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 0.75rem;
+            background-color: rgb(249, 250, 251);
+            border-radius: 0.5rem;
+        }
+
+        .appointment-icon {
+            background-color: rgb(219, 234, 254);
+            padding: 0.75rem;
+            border-radius: 9999px;
+            color: rgb(37, 99, 235);
+        }
+
+        .appointment-info {
+            flex: 1;
+        }
+
+        .appointment-patient {
+            font-weight: 600;
+            color: rgb(31, 41, 55);
+        }
+
+        .appointment-reason {
+            font-size: 0.875rem;
+            color: rgb(75, 85, 99);
+        }
+
+        .appointment-time {
+            font-size: 0.875rem;
+            font-weight: 500;
+            color: rgb(37, 99, 235);
+        }
+
+        .patients-table {
+            width: 100%;
+            background-color: white;
+            border-radius: 0.75rem;
+            overflow: hidden;
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+        }
+
+        .patients-table th {
+            padding: 0.75rem 1.5rem;
+            text-align: left;
+            font-size: 0.75rem;
+            font-weight: 500;
+            text-transform: uppercase;
+            color: rgb(75, 85, 99);
+            background-color: rgb(249, 250, 251);
+            border-bottom: 1px solid rgb(229, 231, 235);
+        }
+
+        .patients-table td {
+            padding: 1rem 1.5rem;
+            color: rgb(31, 41, 55);
+            border-bottom: 1px solid rgb(229, 231, 235);
+        }
+
+        .patients-table tr:hover {
+            background-color: rgb(249, 250, 251);
+            cursor: pointer;
+        }
+
+        .status-badge {
+            padding: 0.25rem 0.5rem;
+            border-radius: 9999px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: white;
+            display: inline-block;
+        }
+
+        .status-badge.stable {
+            background-color: rgb(34, 197, 94);
+        }
+
+        .status-badge.recovering {
+            background-color: rgb(59, 130, 246);
+        }
+
+        .status-badge.critical {
+            background-color: rgb(239, 68, 68);
+        }
+
+        .status-badge.follow-up {
+            background-color: rgb(234, 179, 8);
+        }
+
+        .chat-sidebar {
+            position: fixed;
+            top: 0;
+            right: 0;
+            width: 24rem;
+            height: 100vh;
+            background-color: white;
+            box-shadow: -2px 0 8px rgba(0, 0, 0, 0.1);
+            transform: translateX(100%);
+            transition: transform 0.3s ease-in-out;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .chat-sidebar.open {
+            transform: translateX(0);
+        }
+
+        .chat-header {
+            padding: 1rem;
+            background-color: rgb(59, 130, 246);
+            color: white;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .chat-title {
+            font-size: 1.125rem;
+            font-weight: 600;
+        }
+
+        .chat-close {
+            padding: 0.25rem;
+            border-radius: 9999px;
+            background: none;
+            border: none;
+            color: white;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+
+        .chat-close:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+
+        .chat-messages {
+            flex: 1;
+            overflow-y: auto;
+            padding: 1rem;
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .message {
+            max-width: 80%;
+            padding: 0.75rem;
+            border-radius: 0.5rem;
+        }
+
+        .message.received {
+            align-self: flex-start;
+            background-color: rgb(243, 244, 246);
+            color: rgb(31, 41, 55);
+        }
+
+        .message.sent {
+            align-self: flex-end;
+            background-color: rgb(59, 130, 246);
+            color: white;
+        }
+
+        .message-sender {
+            font-size: 0.875rem;
+            font-weight: 500;
+            margin-bottom: 0.25rem;
+        }
+
+        .message-time {
+            font-size: 0.75rem;
+            opacity: 0.75;
+            margin-top: 0.25rem;
+        }
+
+        .chat-input {
+            padding: 1rem;
+            border-top: 1px solid rgb(229, 231, 235);
+        }
+
+        .chat-form {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .chat-textbox {
+            flex: 1;
+            padding: 0.5rem 1rem;
+            border: 1px solid rgb(209, 213, 219);
+            border-radius: 0.5rem;
+            outline: none;
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+
+        .chat-textbox:focus {
+            border-color: rgb(59, 130, 246);
+            box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2);
+        }
+
+        .chat-send {
+            padding: 0.5rem 1rem;
+            background-color: rgb(59, 130, 246);
+            color: white;
+            border: none;
+            border-radius: 0.5rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+
+        .chat-send:hover {
+            background-color: rgb(37, 99, 235);
+        }
+
+        @media (max-width: 768px) {
+            .overview-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .chat-sidebar {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="dashboard">
+        <header>
+            <h1 class="doctor-name">DocStat - Dr. Sarah Johnson</h1>
+            <div class="header-actions">
+                <button class="icon-button" id="chatToggle">
+                    <i data-lucide="message-circle"></i>
+                    <span class="notification-badge">3</span>
+                </button>
+                <button class="icon-button">
+                    <i data-lucide="bell"></i>
+                    <span class="notification-badge">2</span>
+                </button>
+            </div>
+        </header>
+
+        <nav>
+            <button class="nav-button active" data-tab="overview">
+                <i data-lucide="bar-chart"></i>
+                Overview
+            </button>
+            <button class="nav-button" data-tab="appointments">
+                <i data-lucide="calendar"></i>
+                Appointments
+            </button>
+            <button class="nav-button" data-tab="patients">
+                <i data-lucide="users"></i>
+                Patients
+            </button>
+        </nav>
+
+        <main>
+            <section id="overview" style="display: block;">
+                <div class="overview-grid">
+                    <div class="stats-card">
+                        <h2>Quick Statistics</h2>
+                        <div class="stats-grid">
+                            <div class="stat-item blue">
+                                <div class="stat-label">Total Patients</div>
+                                <div class="stat-value blue" id="total-patients">--</div>
+                            </div>
+                            <div class="stat-item green">
+                                <div class="stat-label">Today's Appointments</div>
+                                <div class="stat-value green" id="todays-appointments">--</div>
+                            </div>
+                            <div class="stat-item red">
+                                <div class="stat-label">Critical Patients</div>
+                                <div class="stat-value red">--</div>
+                            </div>
+                            <div class="stat-item yellow">
+                                <div class="stat-label">Follow-ups</div>
+                                <div class="stat-value yellow">--</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="stats-card">
+                        <h2>Today's Appointments</h2>
+                        <div class="appointments-list" id="todays-appointments-list">
+                            </div>
+                    </div>
+                </div>
+
+                <table class="patients-table" id="overview-patients-table">
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Age</th>
+                            <th>Gender</th>
+                            <th>Status</th>
+                            <th>Last Updated</th>
+                        </tr>
+                    </thead>
+                    <tbody id="overview-patients-tbody">
+                        </tbody>
+                </table>
+            </section>
+
+            <section id="appointments" style="display: none;">
+                <h2>Your Appointments</h2>
+                <div class="appointments-list" id="all-appointments-list">
+                    </div>
+            </section>
+
+            <section id="patients" style="display: none;">
+                <h2>Your Patients</h2>
+                <table class="patients-table">
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="all-patients-tbody">
+                        </tbody>
+                </table>
+            </section>
+        </main>
+    </div>
+
+    <div class="chat-sidebar" id="chatSidebar">
+        <div class="chat-header">
+            <h2 class="chat-title">Emergency Chat</h2>
+            <button class="chat-close" id="chatClose">
+                <i data-lucide="x"></i>
+            </button>
+        </div>
+        <div class="chat-messages">
+            </div>
+        <div class="chat-input">
+            <form class="chat-form" id="chatForm">
+                <input type="text" class="chat-textbox" placeholder="Type your message..." id="messageInput">
+                <button type="submit" class="chat-send">Send</button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        lucide.createIcons();
+
+        const chatToggle = document.getElementById('chatToggle');
+        const chatClose = document.getElementById('chatClose');
+        const chatSidebar = document.getElementById('chatSidebar');
+        const chatForm = document.getElementById('chatForm');
+        const messageInput = document.getElementById('messageInput');
+        const chatMessages = document.querySelector('.chat-messages');
+        const navButtons = document.querySelectorAll('.nav-button');
+        const mainSections = {
+            overview: document.getElementById('overview'),
+            appointments: document.getElementById('appointments'),
+            patients: document.getElementById('patients')
+        };
+        const apiUrl = 'http://127.0.0.1:5005';
+
+        chatToggle.addEventListener('click', () => chatSidebar.classList.add('open'));
+        chatClose.addEventListener('click', () => chatSidebar.classList.remove('open'));
+        chatForm.addEventListener('submit', (e) => { /* ... (Your chat submit logic) ... */ });
+
+        navButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                navButtons.forEach(btn => btn.classList.remove('active'));
+                button.classList.add('active');
+                const tab = button.dataset.tab;
+                for (const sectionId in mainSections) {
+                    mainSections[sectionId].style.display = sectionId === tab ? 'block' : 'none';
+                }
+                if (tab === 'appointments') {
+                    loadAppointments();
+                } else if (tab === 'patients') {
+                    loadPatients();
+                } else if (tab === 'overview') {
+                    loadOverviewData();
+                }
+            });
+        });
+
+        async function loadAppointments() {
+            const doctorName = localStorage.getItem('doctorName');
+            const appointmentsList = document.getElementById('all-appointments-list');
+            appointmentsList.innerHTML = 'Loading appointments...';
+
+            if (doctorName) {
+                try {
+                    const response = await fetch(`${apiUrl}/appointments?doctor_name=${encodeURIComponent(doctorName)}`);
+                    const data = await response.json();
+                    if (data.status === 'success' && data.appointments) {
+                        appointmentsList.innerHTML = '';
+                        if (data.appointments.length > 0) {
+                            data.appointments.forEach(appointment => {
+                                const appointmentCard = document.createElement('div');
+                                appointmentCard.className = 'appointment-card';
+                                appointmentCard.innerHTML = `
+                                    <div class="appointment-icon"><i data-lucide="calendar-check"></i></div>
+                                    <div class="appointment-info">
+                                        <div class="appointment-patient">${appointment.patient_name}</div>
+                                        <div class="appointment-time">${appointment.date} at ${appointment.time} (${appointment.status})</div>
+                                    </div>
+                                `;
+                                appointmentsList.appendChild(appointmentCard);
+                            });
+                        } else {
+                            appointmentsList.textContent = 'No appointments found for you.';
+                        }
+                    } else {
+                        appointmentsList.textContent = 'Failed to load appointments.';
+                    }
+                } catch (error) {
+                    console.error('Error loading appointments:', error);
+                    appointmentsList.textContent = 'Error loading appointments.';
+                }
+            } else {
+                appointmentsList.textContent = 'Doctor name not found. Please log in again.';
+            }
+        }
+
+        async function loadPatients() {
+            const patientsTbody = document.getElementById('all-patients-tbody');
+            patientsTbody.innerHTML = '<tr><td colspan="2">Loading patients...</td></tr>';
+
+            try {
+                const response = await fetch(`${apiUrl}/patients`);
+                const data = await response.json();
+                if (data.status === 'success' && data.patients) {
+                    patientsTbody.innerHTML = '';
+                    if (data.patients.length > 0) {
+                        data.patients.forEach(patientName => {
+                            const row = patientsTbody.insertRow();
+                            const nameCell = row.insertCell();
+                            const actionsCell = row.insertCell();
+                            nameCell.textContent = patientName;
+                            actionsCell.innerHTML = '<button class="icon-button"><i data-lucide="eye"></i></button>'; // Example action
+                        });
+                    } else {
+                        patientsTbody.innerHTML = '<tr><td colspan="2">No patients found.</td></tr>';
+                    }
+                } else {
+                    patientsTbody.innerHTML = '<tr><td colspan="2">Failed to load patients.</td></tr>';
+                }
+            } catch (error) {
+                console.error('Error loading patients:', error);
+                patientsTbody.innerHTML = '<tr><td colspan="2">Error loading patients.</td></tr>';
+            }
+        }
+
+        async function loadOverviewData() {
+            const doctorName = localStorage.getItem('doctorName');
+            document.getElementById('todays-appointments-list').innerHTML = 'Loading...';
+            document.getElementById('overview-patients-tbody').innerHTML = '<tr><td colspan="5">Loading...</td></tr>';
+            document.getElementById('total-patients').textContent = '--';
+            document.getElementById('todays-appointments').textContent = '--';
+
+            if (doctorName) {
+                try {
+                    const appointmentsResponse = await fetch(`${apiUrl}/appointments?doctor_name=${encodeURIComponent(doctorName)}`);
+                    const appointmentsData = await appointmentsResponse.json();
+
+                    const patientsResponse = await fetch(`${apiUrl}/patients`);
+                    const patientsData = await patientsResponse.json();
+
+                    if (appointmentsData.status === 'success' && appointmentsData.appointments) {
+                        const todaysAppointments = appointmentsData.appointments.filter(appt => appt.date === new Date().toISOString().split('T')[0]);
+                        const todaysAppointmentsList = document.getElementById('todays-appointments-list');
+                        todaysAppointmentsList.innerHTML = '';
+                        if (todaysAppointments.length > 0) {
+                            todaysAppointments.forEach(appt => {
+                                const apptDiv = document.createElement('div');
+                                apptDiv.className = 'appointment-card';
+                                apptDiv.innerHTML = `
+                                    <div class="appointment-icon"><i data-lucide="user"></i></div>
+                                    <div class="appointment-info">
+                                        <div class="appointment-patient">${appt.patient_name}</div>
+                                        <div class="appointment-reason">${appt.specialty} appointment</div>
+                                    </div>
+                                    <div class="appointment-time">${appt.time}</div>
+                                `;
+                                todaysAppointmentsList.appendChild(apptDiv);
+                            });
+                        } else {
+                            todaysAppointmentsList.textContent = 'No appointments today.';
+                        }
+                        document.getElementById('todays-appointments').textContent = todaysAppointments.length;
+                    }
+
+                    if (patientsData.status === 'success' && patientsData.patients) {
+                        document.getElementById('total-patients').textContent = patientsData.patients.length;
+                        const overviewPatientsTbody = document.getElementById('overview-patients-tbody');
+                        overviewPatientsTbody.innerHTML = '';
+                        patientsData.patients.slice(0, 5).forEach(patient => { // Display first 5 patients
+                            const row = overviewPatientsTbody.insertRow();
+                            const nameCell = row.insertCell();
+                            nameCell.textContent = patient;
+                            row.insertCell().textContent = '--'; // Age (not available in your /patients endpoint)
+                            row.insertCell().textContent = '--'; // Gender (not available)
+                            row.insertCell().innerHTML = '<span class="status-badge stable">Info NA</span>'; // Status
+                            row.insertCell().textContent = 'N/A'; // Last Updated
+                        });
+                        if (patientsData.patients.length === 0) {
+                            overviewPatientsTbody.innerHTML = '<tr><td colspan="5">No patients available.</td></tr>';
+                        }
+                    }
+
+                } catch (error) {
+                    console.error('Error loading overview data:', error);
+                    document.getElementById('todays-appointments-list').textContent = 'Error loading.';
+                    document.getElementById('overview-patients-tbody').innerHTML = '<tr><td colspan="5">Error loading data.</td></tr>';
+                    document.getElementById('total-patients').textContent = 'Error';
+                    document.getElementById('todays-appointments').textContent = 'Error';
+                }
+            } else {
+                alert('Doctor name not found. Please log in again.');
+                window.location.href = "doctor.html"; // Redirect to login
+            }
+        }
+
+        document.addEventListener("DOMContentLoaded", function () {
+            const doctorName = localStorage.getItem("doctorName");
+            if (doctorName) {
+                document.querySelector(".doctor-name").textContent = `DocStat - ${doctorName}`;
+                loadOverviewData(); // Load initial data for the overview tab
+            } else {
+                window.location.href = "doctor.html";
+            }
+
+            // Initial active tab
+            const initialTab = document.querySelector('.nav-button.active').dataset.tab;
+            if (initialTab === 'appointments') loadAppointments();
+            if (initialTab === 'patients') loadPatients();
+        });
+    </script>
+</body>
+</html>

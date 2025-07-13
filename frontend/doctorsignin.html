@@ -1,0 +1,462 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CureConnect | Doctor Registration</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f0f4f8;
+            margin: 0;
+            padding: 0;
+            color: #2c3e50;
+        }
+        .container {
+            max-width: 850px;
+            margin: 40px auto;
+            padding: 0 20px;
+        }
+        .logo-container {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .logo {
+            color: #2c3e50;
+            font-size: 28px;
+            font-weight: bold;
+        }
+        .logo span {
+            color: #3498db;
+        }
+        .card {
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+            padding: 35px;
+            margin-bottom: 20px;
+        }
+        h1 {
+            font-size: 26px;
+            color: #2c3e50;
+            margin-top: 0;
+            margin-bottom: 5px;
+            text-align: center;
+        }
+        .subtitle {
+            text-align: center;
+            color: #7f8c8d;
+            margin-bottom: 35px;
+            font-size: 14px;
+        }
+        .form-section {
+            margin-bottom: 35px;
+        }
+        .section-title {
+            font-size: 18px;
+            color: #3498db;
+            margin-bottom: 15px;
+            padding-bottom: 8px;
+            border-bottom: 1px solid #e0e6ed;
+        }
+        .form-row {
+            display: flex;
+            flex-wrap: wrap;
+            margin: 0 -10px;
+        }
+        .form-group {
+            flex: 1 0 calc(50% - 20px);
+            margin: 0 10px 20px;
+            min-width: 200px;
+        }
+        .form-group.full-width {
+            flex: 1 0 calc(100% - 20px);
+        }
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-size: 14px;
+            color: #34495e;
+            font-weight: 500;
+        }
+        input[type="text"],
+        input[type="email"],
+        input[type="tel"],
+        input[type="date"],
+        input[type="password"],
+        input[type="file"],
+        select,
+        textarea {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #dbe2e8;
+            border-radius: 4px;
+            font-size: 16px;
+            box-sizing: border-box;
+            transition: all 0.2s ease;
+        }
+        textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+        input[type="text"]:focus,
+        input[type="email"]:focus,
+        input[type="tel"]:focus,
+        input[type="date"]:focus,
+        input[type="password"]:focus,
+        input[type="file"]:focus,
+        select:focus,
+        textarea:focus {
+            border-color: #3498db;
+            box-shadow: 0 0 0 2px rgba(52, 152, 219, 0.2);
+            outline: none;
+        }
+        .btn {
+            background-color: #2c3e50;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            padding: 14px 24px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background-color 0.2s;
+            display: block;
+            width: 100%;
+            max-width: 250px;
+            margin: 30px auto 0;
+            font-weight: 500;
+        }
+        .btn:hover {
+            background-color: #1a2530;
+        }
+        .required:after {
+            content: " *";
+            color: #e74c3c;
+        }
+        .checkbox-group {
+            margin: 20px 0;
+        }
+        .checkbox-label {
+            display: flex;
+            align-items: flex-start;
+            font-size: 14px;
+            color: #34495e;
+        }
+        .checkbox-label input {
+            margin-right: 10px;
+            margin-top: 3px;
+        }
+        .privacy-notice {
+            font-size: 13px;
+            color: #7f8c8d;
+            margin-top: 20px;
+            text-align: center;
+            background-color: #f8f9fa;
+            padding: 15px;
+            border-radius: 4px;
+        }
+        .error-message {
+            color: #e74c3c;
+            font-size: 13px;
+            margin-top: 5px;
+            display: none;
+        }
+        .footer {
+            margin-top: 20px;
+            text-align: center;
+            font-size: 12px;
+            color: #95a5a6;
+        }
+        .footer a {
+            color: #95a5a6;
+            text-decoration: none;
+        }
+        .footer a:hover {
+            text-decoration: underline;
+        }
+        .login-link {
+            text-align: center;
+            margin: 20px 0;
+            font-size: 14px;
+            color: #7f8c8d;
+        }
+        .login-link a {
+            color: #3498db;
+            text-decoration: none;
+        }
+        .login-link a:hover {
+            text-decoration: underline;
+        }
+        .file-upload {
+            margin-top: 5px;
+        }
+        .file-upload-label {
+            font-size: 13px;
+            color: #7f8c8d;
+            margin-top: 5px;
+        }
+        .verification-note {
+            font-size: 13px;
+            color: #e67e22;
+            margin-top: 5px;
+        }
+        @media (max-width: 600px) {
+            .form-group {
+                flex: 1 0 calc(100% - 20px);
+            }
+            .container {
+                margin: 20px auto;
+            }
+            .card {
+                padding: 25px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="logo-container">
+            <div class="logo">Cure<span>Connect</span></div>
+        </div>
+        
+        <div class="card">
+            <h1>Healthcare Provider Registration</h1>
+            <div class="subtitle">Join the CureConnect network to securely manage patient records and appointments</div>
+            
+            <form id="doctorRegistrationForm">
+                <div class="form-section">
+                    <div class="section-title">Professional Information</div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="firstName" class="required">First Name</label>
+                            <input type="text" id="firstName" name="firstName" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="lastName" class="required">Last Name</label>
+                            <input type="text" id="lastName" name="lastName" required>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="medicalLicense" class="required">Medical License Number</label>
+                            <input type="text" id="medicalLicense" name="medicalLicense" required>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="specialty" class="required">Primary Specialty</label>
+                            <select id="specialty" name="specialty" required>
+                                <option value="">Select Specialty</option>
+                                <option value="familyMedicine">Family Medicine</option>
+                                <option value="internalMedicine">Internal Medicine</option>
+                                <option value="pediatrics">Pediatrics</option>
+                                <option value="obgyn">Obstetrics & Gynecology</option>
+                                <option value="cardiology">Cardiology</option>
+                                <option value="dermatology">Dermatology</option>
+                                <option value="neurology">Neurology</option>
+                                <option value="orthopedics">Orthopedics</option>
+                                <option value="psychiatry">Psychiatry</option>
+                                <option value="oncology">Oncology</option>
+                                <option value="other">Other</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="boardCertification">Board Certification</label>
+                            <input type="text" id="boardCertification" name="boardCertification">
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group full-width">
+                            <label for="credentials" class="required">Professional Credentials</label>
+                            <input type="text" id="credentials" name="credentials" placeholder="MD, DO, NP, PA, etc." required>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="form-section">
+                    <div class="section-title">Practice Information</div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="practiceName" class="required">Practice Name</label>
+                            <input type="text" id="practiceName" name="practiceName" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="practiceType" class="required">Practice Type</label>
+                            <select id="practiceType" name="practiceType" required>
+                                <option value="">Select Type</option>
+                                <option value="solo">Solo Practice</option>
+                                <option value="group">Group Practice</option>
+                                <option value="hospital">Hospital</option>
+                                <option value="academic">Academic Medical Center</option>
+                                <option value="fqhc">Federally Qualified Health Center</option>
+                                <option value="other">Other</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group full-width">
+                            <label for="practiceAddress" class="required">Practice Address</label>
+                            <input type="text" id="practiceAddress" name="practiceAddress" required>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="practiceCity" class="required">City</label>
+                            <input type="text" id="practiceCity" name="practiceCity" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="practiceState" class="required">State</label>
+                            <input type="text" id="practiceState" name="practiceState" required>
+
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="practiceZip" class="required">ZIP Code</label>
+                            <input type="text" id="practiceZip" name="practiceZip" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="practicePhone" class="required">Office Phone</label>
+                            <input type="tel" id="practicePhone" name="practicePhone" placeholder="(123) 456-7890" required>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="form-section">
+                    <div class="section-title">Contact Information</div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="email" class="required">Professional Email</label>
+                            <input type="email" id="email" name="email" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="mobilePhone" class="required">Mobile Phone</label>
+                            <input type="tel" id="mobilePhone" name="mobilePhone" placeholder="(123) 456-7890" required>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="faxNumber">Fax Number</label>
+                            <input type="tel" id="faxNumber" name="faxNumber" placeholder="(123) 456-7890">
+                        </div>
+                        <div class="form-group">
+                            <label for="preferredContact" class="required">Preferred Contact Method</label>
+                            <select id="preferredContact" name="preferredContact" required>
+                                <option value="">Select</option>
+                                <option value="email">Email</option>
+                                <option value="phone">Phone</option>
+                                <option value="fax">Fax</option>
+                                <option value="portal">Portal Message</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="form-section">
+                    <div class="section-title">Documentation</div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="licenseDocument" class="required">Medical License</label>
+                            <input type="file" id="licenseDocument" name="licenseDocument" class="file-upload" required>
+                            <div class="file-upload-label">Upload a clear copy of your current medical license (PDF or JPG)</div>
+                        </div>
+                        <div class="form-group">
+                            <label for="identificationDocument" class="required">Government-issued ID</label>
+                            <input type="file" id="identificationDocument" name="identificationDocument" class="file-upload" required>
+                            <div class="file-upload-label">Upload a clear copy of your driver's license or passport (PDF or JPG)</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="form-section">
+                    <div class="section-title">Account Security</div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="password" class="required">Create Password</label>
+                            <input type="password" id="password" name="password" required>
+                            <div class="file-upload-label">Minimum 12 characters with at least one uppercase letter, number, and special character</div>
+                        </div>
+                        <div class="form-group">
+                            <label for="confirmPassword" class="required">Confirm Password</label>
+                            <input type="password" id="confirmPassword" name="confirmPassword" required>
+                            <div class="error-message" id="passwordError">Passwords do not match</div>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group full-width">
+                            <label for="securityQuestion" class="required">Security Question</label>
+                            <select id="securityQuestion" name="securityQuestion" required>
+                                <option value="">Select a security question</option>
+                                <option value="medSchool">From which medical school did you graduate?</option>
+                                <option value="residency">Where did you complete your residency?</option>
+                                <option value="childhood">What was the street name you grew up on?</option>
+                                <option value="firstHospital">At which hospital did you first practice?</option>
+                                <option value="mentor">Who was your most influential medical mentor?</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group full-width">
+                            <label for="securityAnswer" class="required">Security Answer</label>
+                            <input type="text" id="securityAnswer" name="securityAnswer" required>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="checkbox-group">
+                    <label class="checkbox-label">
+                        <input type="checkbox" name="termsAgree" required>
+                        I agree to the <a href="#">Terms of Service</a>, <a href="#">Privacy Policy</a>, and <a href="#">Provider Agreement</a>
+                    </label>
+                </div>
+                
+                <div class="checkbox-group">
+                    <label class="checkbox-label">
+                        <input type="checkbox" name="hipaaAgree" required>
+                        I understand and agree to comply with all HIPAA regulations regarding patient health information
+                    </label>
+                </div>
+                <button type="submit" class="btn">Submit Registration</button>
+                <div class="privacy-notice">
+                    Your professional information will be verified before your account is activated. This process typically takes 2-3 business days. You will receive an email notification once your account has been approved.
+                </div>
+            </form>
+        </div>
+        <div class="login-link">
+            Already registered? <a href="#">Log in to Provider Portal</a>
+        </div>
+        
+        <div class="footer">
+            &copy; 2025 CureConnect Health Systems. All rights reserved.<br>
+            <a href="#">Privacy Policy</a> | <a href="#">Terms of Service</a> | <a href="#">Compliance</a> | <a href="#">Contact Support</a>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('doctorRegistrationForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const password = document.getElementById('password').value;
+            const confirmPassword = document.getElementById('confirmPassword').value;
+            const passwordError = document.getElementById('passwordError');
+            
+            if (password !== confirmPassword) {
+                passwordError.style.display = 'block';
+                return;
+            }
+            alert('Your registration has been submitted. In a production environment, your credentials would be verified before account activation.');
+        });
+        
+        document.getElementById('confirmPassword').addEventListener('input', function() {
+            const password = document.getElementById('password').value;
+            const confirmPassword = this.value;
+            const passwordError = document.getElementById('passwordError');
+            
+            if (password !== confirmPassword) {
+                passwordError.style.display = 'block';
+            } else {
+                passwordError.style.display = 'none';
+            }
+        });
+    </script>
+</body>
+</html>

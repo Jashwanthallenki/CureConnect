@@ -1,0 +1,442 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hospital Management System</title>
+    <style>
+        /* General Styles */
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f5f5f5;
+            color: #333;
+        }
+        
+        .container {
+            width: 95%;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        header {
+            background-color: #2c3e50;
+            color: white;
+            padding: 20px 0;
+            text-align: center;
+        }
+        
+        header h1 {
+            margin: 0;
+        }
+        
+        /* Navigation Styles */
+        nav {
+            background-color: #34495e;
+        }
+        
+        nav ul {
+            display: flex;
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            justify-content: center;
+        }
+        
+        nav li {
+            padding: 15px 25px;
+            cursor: pointer;
+            color: white;
+            font-weight: 500;
+            transition: background-color 0.3s;
+        }
+        
+        nav li:hover {
+            background-color: #2c3e50;
+        }
+        
+        nav li.active {
+            background-color: #1abc9c;
+        }
+        
+        /* Main Content Styles */
+        main {
+            padding: 20px 0;
+        }
+        
+        .tab-content {
+            display: none;
+            padding: 20px;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            margin-top: 20px;
+        }
+        
+        .tab-content.active {
+            display: block;
+        }
+        
+        /* Filter Styles */
+        .filter-container {
+            margin-bottom: 20px;
+            text-align: left;
+        }
+        
+        .filter-container select {
+            padding: 8px;
+            border-radius: 4px;
+            border: 1px solid #ddd;
+            margin-left: 10px;
+            min-width: 200px;
+        }
+        
+        /* Table Styles */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        
+        table th, table td {
+            padding: 12px 15px;
+            border: 1px solid #ddd;
+            text-align: left;
+        }
+        
+        table th {
+            background-color: #f8f9fa;
+            font-weight: 600;
+        }
+        
+        table tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+        
+        .status-scheduled {
+            color: #2980b9;
+            font-weight: 500;
+        }
+        
+        .status-completed {
+            color: #27ae60;
+            font-weight: 500;
+        }
+        
+        .status-canceled {
+            color: #e74c3c;
+            font-weight: 500;
+        }
+        
+        /* Grid Layouts */
+        .grid-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 20px;
+        }
+        
+        .card {
+            background-color: #f8f9fa;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            transition: transform 0.2s;
+        }
+        
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+        
+        .doctor-card h3 {
+            margin-top: 0;
+            color: #2c3e50;
+        }
+        
+        .patient-name {
+            font-size: 18px;
+            font-weight: 500;
+        }
+        
+        /* Loading and Error States */
+        .loading, .error {
+            padding: 20px;
+            text-align: center;
+            font-size: 18px;
+            margin-top: 20px;
+        }
+        
+        .error {
+            color: #e74c3c;
+            border: 1px solid #e74c3c;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <h1>Hospital Management System</h1>
+        </div>
+    </header>
+    
+    <nav>
+        <ul>
+            <li class="nav-item active" data-target="appointments">Appointments</li>
+            <li class="nav-item" data-target="patients">Patients</li>
+            <li class="nav-item" data-target="doctors">Doctors</li>
+        </ul>
+    </nav>
+    
+    <main>
+        <div class="container">
+            <!-- Appointments Tab -->
+            <div id="appointments" class="tab-content active">
+                <h2>Appointments</h2>
+                <div class="filter-container">
+                    <label for="doctor-filter">Filter by Doctor: </label>
+                    <select id="doctor-filter">
+                        <option value="">All Doctors</option>
+                    </select>
+                </div>
+                <div id="appointments-content">
+                    <p class="loading">Loading appointments...</p>
+                </div>
+            </div>
+            
+            <!-- Patients Tab -->
+            <div id="patients" class="tab-content">
+                <h2>Patients</h2>
+                <div id="patients-content">
+                    <p class="loading">Loading patients...</p>
+                </div>
+            </div>
+            
+            <!-- Doctors Tab -->
+            <div id="doctors" class="tab-content">
+                <h2>Doctors</h2>
+                <div id="doctors-content">
+                    <p class="loading">Loading doctors...</p>
+                </div>
+            </div>
+        </div>
+    </main>
+    
+    <script>
+        // API Base URL
+        const API_BASE_URL = 'http://localhost:5000';
+        
+        // DOM Elements
+        const navItems = document.querySelectorAll('.nav-item');
+        const tabContents = document.querySelectorAll('.tab-content');
+        const doctorFilter = document.getElementById('doctor-filter');
+        
+        // State
+        let doctors = [];
+        let selectedDoctor = '';
+        
+        // Event Listeners
+        navItems.forEach(item => {
+            item.addEventListener('click', () => {
+                const target = item.getAttribute('data-target');
+                
+                // Update active navigation item
+                navItems.forEach(navItem => navItem.classList.remove('active'));
+                item.classList.add('active');
+                
+                // Update active tab content
+                tabContents.forEach(content => content.classList.remove('active'));
+                document.getElementById(target).classList.add('active');
+                
+                // Load data for the selected tab
+                if (target === 'appointments') {
+                    loadAppointments(selectedDoctor);
+                } else if (target === 'patients') {
+                    loadPatients();
+                } else if (target === 'doctors') {
+                    loadDoctors();
+                }
+            });
+        });
+        
+        doctorFilter.addEventListener('change', (e) => {
+            selectedDoctor = e.target.value;
+            loadAppointments(selectedDoctor);
+        });
+        
+        // API Functions
+        async function fetchData(endpoint, params = {}) {
+            const url = new URL(`${API_BASE_URL}/${endpoint}`);
+            
+            // Add query parameters
+            Object.keys(params).forEach(key => {
+                if (params[key]) {
+                    url.searchParams.append(key, params[key]);
+                }
+            });
+            
+            try {
+                const response = await fetch(url);
+                if (!response.ok) {
+                    throw new Error(`HTTP error: ${response.status}`);
+                }
+                return await response.json();
+            } catch (error) {
+                console.error(`Error fetching data from ${endpoint}:`, error);
+                throw error;
+            }
+        }
+        
+        // Load Appointments
+        async function loadAppointments(doctorName = '') {
+            const appointmentsContent = document.getElementById('appointments-content');
+            appointmentsContent.innerHTML = '<p class="loading">Loading appointments...</p>';
+            
+            try {
+                const params = doctorName ? { doctor_name: doctorName } : {};
+                const data = await fetchData('appointments', params);
+                
+                if (data.appointments && data.appointments.length > 0) {
+                    // Create table
+                    let html = `
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Patient</th>
+                                    <th>Doctor</th>
+                                    <th>Specialty</th>
+                                    <th>Date</th>
+                                    <th>Time</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                    `;
+                    
+                    // Add rows
+                    data.appointments.forEach(appointment => {
+                        const statusClass = getStatusClass(appointment.status);
+                        html += `
+                            <tr>
+                                <td>${appointment.id}</td>
+                                <td>${appointment.patient_name}</td>
+                                <td>${appointment.doctor_name}</td>
+                                <td>${appointment.specialty}</td>
+                                <td>${appointment.date}</td>
+                                <td>${appointment.time}</td>
+                                <td class="${statusClass}">${appointment.status}</td>
+                            </tr>
+                        `;
+                    });
+                    
+                    html += `
+                            </tbody>
+                        </table>
+                    `;
+                    
+                    appointmentsContent.innerHTML = html;
+                } else {
+                    appointmentsContent.innerHTML = '<p>No appointments found.</p>';
+                }
+            } catch (error) {
+                appointmentsContent.innerHTML = `<p class="error">Failed to load appointments: ${error.message}</p>`;
+            }
+        }
+        
+        // Load Patients
+        async function loadPatients() {
+            const patientsContent = document.getElementById('patients-content');
+            patientsContent.innerHTML = '<p class="loading">Loading patients...</p>';
+            
+            try {
+                const data = await fetchData('patients');
+                
+                if (data.patients && data.patients.length > 0) {
+                    let html = '<div class="grid-container">';
+                    
+                    data.patients.forEach(patient => {
+                        html += `
+                            <div class="card">
+                                <div class="patient-name">${patient}</div>
+                            </div>
+                        `;
+                    });
+                    
+                    html += '</div>';
+                    patientsContent.innerHTML = html;
+                } else {
+                    patientsContent.innerHTML = '<p>No patients found.</p>';
+                }
+            } catch (error) {
+                patientsContent.innerHTML = `<p class="error">Failed to load patients: ${error.message}</p>`;
+            }
+        }
+        
+        // Load Doctors
+        async function loadDoctors() {
+            const doctorsContent = document.getElementById('doctors-content');
+            doctorsContent.innerHTML = '<p class="loading">Loading doctors...</p>';
+            
+            try {
+                const data = await fetchData('doctors');
+                
+                if (data.doctors && data.doctors.length > 0) {
+                    let html = '<div class="grid-container">';
+                    
+                    data.doctors.forEach(doctor => {
+                        html += `
+                            <div class="card doctor-card">
+                                <h3>${doctor.name}</h3>
+                                <p><strong>Specialty:</strong> ${doctor.specialty}</p>
+                            </div>
+                        `;
+                    });
+                    
+                    html += '</div>';
+                    doctorsContent.innerHTML = html;
+                } else {
+                    doctorsContent.innerHTML = '<p>No doctors found.</p>';
+                }
+            } catch (error) {
+                doctorsContent.innerHTML = `<p class="error">Failed to load doctors: ${error.message}</p>`;
+            }
+        }
+        
+        // Load Doctors for Filter
+        async function loadDoctorsForFilter() {
+            try {
+                const data = await fetchData('doctors');
+                doctors = data.doctors || [];
+                
+                // Update doctor filter options
+                doctorFilter.innerHTML = '<option value="">All Doctors</option>';
+                doctors.forEach(doctor => {
+                    const option = document.createElement('option');
+                    option.value = doctor.name;
+                    option.textContent = doctor.name;
+                    doctorFilter.appendChild(option);
+                });
+            } catch (error) {
+                console.error('Failed to load doctors for filter:', error);
+            }
+        }
+        
+        // Helpers
+        function getStatusClass(status) {
+            switch (status) {
+                case 'completed': return 'status-completed';
+                case 'canceled': return 'status-canceled';
+                default: return 'status-scheduled';
+            }
+        }
+        
+        // Initialize
+        document.addEventListener('DOMContentLoaded', () => {
+            loadDoctorsForFilter();
+            loadAppointments();
+        });
+    </script>
+</body>
+</html>

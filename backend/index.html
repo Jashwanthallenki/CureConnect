@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hospital API Calls</title>
+    <style>
+        body {
+            font-family: sans-serif;
+        }
+        .container {
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 20px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        button {
+            padding: 10px 15px;
+            margin-right: 10px;
+            cursor: pointer;
+        }
+        #results {
+            margin-top: 20px;
+            border: 1px solid #eee;
+            padding: 15px;
+            border-radius: 5px;
+            background-color: #f9f9f9;
+            white-space: pre-wrap; /* Preserve formatting */
+        }
+        #filter-appointments {
+            margin-top: 15px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Call Hospital API Endpoints</h1>
+
+        <div>
+            <button onclick="getAllAppointments()">Get All Appointments</button>
+        </div>
+
+        <div id="filter-appointments">
+            <h3>Filter Appointments by Doctor</h3>
+            <label for="doctorName">Doctor Name:</label>
+            <input type="text" id="doctorName" placeholder="Enter doctor's name">
+            <button onclick="getAppointmentsByDoctor()">Get Doctor's Appointments</button>
+        </div>
+
+        <div>
+            <button onclick="getAllPatients()">Get All Patients</button>
+        </div>
+
+        <div>
+            <button onclick="getAllDoctors()">Get All Doctors</button>
+        </div>
+
+        <div id="results">
+            <h2>Results:</h2>
+            <pre id="json-output"></pre>
+        </div>
+    </div>
+
+    <script>
+        const resultsDiv = document.getElementById('json-output');
+        const apiUrl = 'http://127.0.0.1:5000'; // Make sure this matches your Flask app's URL
+
+        function displayResults(data) {
+    resultsDiv.innerHTML = ''; // Clear previous results
+
+    if (data && data.status === 'success') {
+        if (data.appointments) {
+            if (data.appointments.length > 0) {
+                const appointmentsTitle = document.createElement('h3');
+                appointmentsTitle.textContent = 'Appointments:';
+                resultsDiv.appendChild(appointmentsTitle);
+
+                const appointmentsList = document.createElement('ul');
+                data.appointments.forEach(appointment => {
+                    const listItem = document.createElement('li');
+                    listItem.textContent = `ID: ${appointment.id}, Patient: ${appointment.patient_name}, Doctor: ${appointment.doctor_name} (${appointment.specialty}), Date: ${appointment.date}, Time: ${appointment.time}, Status: ${appointment.status}`;
+                    appointmentsList.appendChild(listItem);
+                });
+                resultsDiv.appendChild(appointmentsList);
+            } else {
+                resultsDiv.textContent = 'No appointments found.';
+            }
+        } else if (data.patients) {
+            if (data.patients.length > 0) {
+                const patientsTitle = document.createElement('h3');
+                patientsTitle.textContent = 'Patients:';
+                resultsDiv.appendChild(patientsTitle);
+
+                const patientsList = document.createElement('ul');
+                data.patients.forEach(patient => {
+                    const listItem = document.createElement('li');
+                    listItem.textContent = patient;
+                    patientsList.appendChild(listItem);
+                });
+                resultsDiv.appendChild(patientsList);
+            } else {
+                resultsDiv.textContent = 'No patients found.';
+            }
+        } else if (data.doctors) {
+            if (data.doctors.length > 0) {
+                const doctorsTitle = document.createElement('h3');
+                doctorsTitle.textContent = 'Doctors:';
+                resultsDiv.appendChild(doctorsTitle);
+
+                const doctorsList = document.createElement('ul');
+                data.doctors.forEach(doctor => {
+                    const listItem = document.createElement('li');
+                    listItem.textContent = `ID: ${doctor.id}, Name: ${doctor.name}, Specialty: ${doctor.specialty}`;
+                    doctorsList.appendChild(listItem);
+                });
+                resultsDiv.appendChild(doctorsList);
+            } else {
+                resultsDiv.textContent = 'No doctors found.';
+            }
+        } else if (data.message) {
+            resultsDiv.textContent = data.message;
+        } else {
+            resultsDiv.textContent = JSON.stringify(data, null, 2); // Fallback to raw JSON
+        }
+    } else if (data && data.status === 'error') {
+        resultsDiv.textContent = `Error: ${data.message}`;
+    } else {
+        resultsDiv.textContent = 'Unexpected response format.';
+    }
+}
+
+        async function getAllAppointments() {
+            try {
+                const response = await fetch(`${apiUrl}/appointments`);
+                const data = await response.json();
+                displayResults(data);
+            } catch (error) {
+                displayResults({ status: 'error', message: error.message });
+            }
+        }
+
+        async function getAppointmentsByDoctor() {
+            const doctorName = document.getElementById('doctorName').value;
+            if (doctorName) {
+                try {
+                    const response = await fetch(`${apiUrl}/appointments?doctor_name=${doctorName}`);
+                    const data = await response.json();
+                    displayResults(data);
+                } catch (error) {
+                    displayResults({ status: 'error', message: error.message });
+                }
+            } else {
+                alert('Please enter a doctor\'s name.');
+            }
+        }
+
+        async function getAllPatients() {
+            try {
+                const response = await fetch(`${apiUrl}/patients`);
+                const data = await response.json();
+                displayResults(data);
+            } catch (error) {
+                displayResults({ status: 'error', message: error.message });
+            }
+        }
+
+        async function getAllDoctors() {
+            try {
+                const response = await fetch(`${apiUrl}/doctors`);
+                const data = await response.json();
+                displayResults(data);
+            } catch (error) {
+                displayResults({ status: 'error', message: error.message });
+            }
+        }
+    </script>
+</body>
+</html>

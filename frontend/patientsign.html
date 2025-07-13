@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CureConnect | Patient Registration</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f5f8fa;
+            margin: 0;
+            padding: 0;
+            color: #333;
+        }
+        .container {
+            max-width: 800px;
+            margin: 40px auto;
+            padding: 0 20px;
+        }
+        .logo-container {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .logo {
+            color: #1a73e8;
+            font-size: 28px;
+            font-weight: bold;
+        }
+        .logo span {
+            color: #4CAF50;
+        }
+        .card {
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            padding: 30px;
+            margin-bottom: 20px;
+        }
+        h1 {
+            font-size: 24px;
+            color: #333;
+            margin-top: 0;
+            margin-bottom: 5px;
+            text-align: center;
+        }
+        .subtitle {
+            text-align: center;
+            color: #666;
+            margin-bottom: 30px;
+            font-size: 14px;
+        }
+        .form-section {
+            margin-bottom: 30px;
+        }
+        .section-title {
+            font-size: 18px;
+            color: #1a73e8;
+            margin-bottom: 15px;
+            padding-bottom: 8px;
+            border-bottom: 1px solid #eee;
+        }
+        .form-row {
+            display: flex;
+            flex-wrap: wrap;
+            margin: 0 -10px;
+        }
+        .form-group {
+            flex: 1 0 calc(50% - 20px);
+            margin: 0 10px 20px;
+            min-width: 200px;
+        }
+        .form-group.full-width {
+            flex: 1 0 calc(100% - 20px);
+        }
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-size: 14px;
+            color: #555;
+            font-weight: 500;
+        }
+        input[type="text"],
+        input[type="email"],
+        input[type="tel"],
+        input[type="date"],
+        input[type="password"],
+        select {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 16px;
+            box-sizing: border-box;
+            transition: border-color 0.2s;
+        }
+        input[type="text"]:focus,
+        input[type="email"]:focus,
+        input[type="tel"]:focus,
+        input[type="date"]:focus,
+        input[type="password"]:focus,
+        select:focus {
+            border-color: #1a73e8;
+            outline: none;
+            box-shadow: 0 0 0 2px rgba(26,115,232,0.2);
+        }
+        .btn {
+            background-color: #1a73e8;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            padding: 12px 24px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background-color 0.2s;
+            display: block;
+            width: 100%;
+            max-width: 200px;
+            margin: 20px auto 0;
+        }
+        .btn:hover {
+            background-color: #0d62c9;
+        }
+        .required:after {
+            content: " *";
+            color: #e53935;
+        }
+        .checkbox-group {
+            margin: 20px 0;
+        }
+        .checkbox-label {
+            display: flex;
+            align-items: flex-start;
+            font-size: 14px;
+            color: #555;
+        }
+        .checkbox-label input {
+            margin-right: 10px;
+            margin-top: 3px;
+        }
+        .privacy-notice {
+            font-size: 13px;
+            color: #666;
+            margin-top: 15px;
+            text-align: center;
+        }
+        .error-message {
+            color: #e53935;
+            font-size: 13px;
+            margin-top: 5px;
+            display: none;
+        }
+        .footer {
+            margin-top: 20px;
+            text-align: center;
+            font-size: 12px;
+            color: #777;
+        }
+        .footer a {
+            color: #777;
+            text-decoration: none;
+        }
+        .footer a:hover {
+            text-decoration: underline;
+        }
+        .login-link {
+            text-align: center;
+            margin: 20px 0;
+            font-size: 14px;
+        }
+        .login-link a {
+            color: #1a73e8;
+            text-decoration: none;
+        }
+        .login-link a:hover {
+            text-decoration: underline;
+        }
+        @media (max-width: 600px) {
+            .form-group {
+                flex: 1 0 calc(100% - 20px);
+            }
+            .container {
+                margin: 20px auto;
+            }
+            .card {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="logo-container">
+            <div class="logo">Cure<span>Connect</span></div>
+        </div>
+        
+        <div class="card">
+            <h1>Patient Registration</h1>
+            <div class="subtitle">Create your CureConnect patient account to access your health information</div>
+            
+            <form id="registrationForm">
+                <div class="form-section">
+                    <div class="section-title">Personal Information</div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="firstName" class="required">First Name</label>
+                            <input type="text" id="firstName" name="firstName" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="lastName" class="required">Last Name</label>
+                            <input type="text" id="lastName" name="lastName" required>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="dob" class="required">Date of Birth</label>
+                            <input type="date" id="dob" name="dob" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="gender" class="required">Gender</label>
+                            <select id="gender" name="gender" required>
+                                <option value="">Select</option>
+                                <option value="female">Female</option>
+                                <option value="male">Male</option>
+                                <option value="non-binary">Non-binary</option>
+                                <option value="prefer-not-to-say">Prefer not to say</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="form-section">
+                    <div class="section-title">Contact Information</div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="email" class="required">Email Address</label>
+                            <input type="email" id="email" name="email" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="phone" class="required">Phone Number</label>
+                            <input type="tel" id="phone" name="phone" placeholder="(123) 456-7890" required>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group full-width">
+                            <label for="address" class="required">Street Address</label>
+                            <input type="text" id="address" name="address" required>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="city" class="required">City</label>
+                            <input type="text" id="city" name="city" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="state" class="required">State</label>
+                            <input type="text" id="state" name="state" required>
+
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="zip" class="required">ZIP Code</label>
+                            <input type="text" id="zip" name="zip" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="country" class="required">Country</label>
+                            <input type="text" id="country" name="country" required>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="form-section">
+                    <div class="section-title">Medical Information</div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="primaryDoctor">Primary Care Physician</label>
+                            <input type="text" id="primaryDoctor" name="primaryDoctor">
+                        </div>
+                        <div class="form-group">
+                            <label for="insuranceProvider">Insurance Provider</label>
+                            <input type="text" id="insuranceProvider" name="insuranceProvider">
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="insuranceId">Insurance ID</label>
+                            <input type="text" id="insuranceId" name="insuranceId">
+                        </div>
+                        <div class="form-group">
+                            <label for="emergencyContact">Emergency Contact Name</label>
+                            <input type="text" id="emergencyContact" name="emergencyContact">
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="emergencyPhone">Emergency Contact Phone</label>
+                            <input type="tel" id="emergencyPhone" name="emergencyPhone" placeholder="(123) 456-7890">
+                        </div>
+                        <div class="form-group">
+                            <label for="relationship">Relationship to Patient</label>
+                            <input type="text" id="relationship" name="relationship">
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="form-section">
+                    <div class="section-title">Account Security</div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="password" class="required">Create Password</label>
+                            <input type="password" id="password" name="password" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="confirmPassword" class="required">Confirm Password</label>
+                            <input type="password" id="confirmPassword" name="confirmPassword" required>
+                            <div class="error-message" id="passwordError">Passwords do not match</div>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group full-width">
+                            <label for="securityQuestion" class="required">Security Question</label>
+                            <select id="securityQuestion" name="securityQuestion" required>
+                                <option value="">Select a security question</option>
+                                <option value="firstPet">What was the name of your first pet?</option>
+                                <option value="birthCity">In what city were you born?</option>
+                                <option value="motherMaiden">What is your mother's maiden name?</option>
+                                <option value="elementarySchool">What elementary school did you attend?</option>
+                                <option value="firstCar">What was the make of your first car?</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group full-width">
+                            <label for="securityAnswer" class="required">Security Answer</label>
+                            <input type="text" id="securityAnswer" name="securityAnswer" required>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="checkbox-group">
+                    <label class="checkbox-label">
+                        <input type="checkbox" name="termsAgree" required>
+                        I agree to the <a href="#">Terms of Service</a> and <a href="#">Privacy Policy</a>
+                    </label>
+                </div>
+                
+                <div class="checkbox-group">
+                    <label class="checkbox-label">
+                        <input type="checkbox" name="hipaaConsent" required>
+                        I consent to the electronic disclosure of my health information in accordance with HIPAA regulations
+                    </label>
+                </div>
+                
+                <button type="submit" class="btn">Register</button>
+                
+                <div class="privacy-notice">
+                    By registering, you acknowledge that you have read and understood our privacy practices.
+                </div>
+            </form>
+        </div>
+        
+        <div class="login-link">
+            Already have an account? <a href="#">Login</a>
+        </div>
+        
+        <div class="footer">
+            &copy; 2025 CureConnect Health Systems. All rights reserved.<br>
+            <a href="#">Privacy Policy</a> | <a href="#">Terms of Use</a> | <a href="#">Contact Us</a>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('registrationForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const password = document.getElementById('password').value;
+            const confirmPassword = document.getElementById('confirmPassword').value;
+            const passwordError = document.getElementById('passwordError');
+            
+            if (password !== confirmPassword) {
+                passwordError.style.display = 'block';
+                return;
+            }
+                        alert('Registration form would be submitted here in a production environment.');
+        });
+        
+        document.getElementById('confirmPassword').addEventListener('input', function() {
+            const password = document.getElementById('password').value;
+            const confirmPassword = this.value;
+            const passwordError = document.getElementById('passwordError');
+            
+            if (password !== confirmPassword) {
+                passwordError.style.display = 'block';
+            } else {
+                passwordError.style.display = 'none';
+            }
+        });
+    </script>
+</body>
+</html>

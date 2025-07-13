@@ -1,0 +1,833 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CureConnect - Complete Healthcare Platform</title>
+    <style>
+        :root {
+            --primary: #1976d2;
+            --primary-light: #d9dbdb;
+            --secondary: #4caf50;
+            --secondary-light: #e8f5e9;
+            --text-dark: #333;
+            --text-light: #777;
+            --white: #fff;
+            --light-gray: #f5f5f5;
+            --border: #e0e0e0;
+            --error: #f44336;
+            --warning: #ff9800;
+            --success: #4caf50;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: var(--light-gray);
+            color: var(--text-dark);
+            line-height: 1.6;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        
+        header {
+            background-color: var(--white);
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        
+        .header-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 0;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 24px;
+            font-weight: bold;
+            color: var(--primary);
+        }
+        
+        .logo-icon {
+            width: 32px;
+            height: 32px;
+            background-color: var(--primary);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+        }
+        
+        nav ul {
+            display: flex;
+            list-style: none;
+            gap: 25px;
+        }
+        
+        nav ul li a {
+            text-decoration: none;
+            color: var(--text-dark);
+            font-weight: 500;
+            padding: 8px 0;
+            position: relative;
+            transition: all 0.3s ease;
+        }
+        
+        nav ul li a:hover {
+            color: var(--primary);
+        }
+        
+        nav ul li a::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background-color: var(--primary);
+            transition: width 0.3s ease;
+        }
+        
+        nav ul li a:hover::after {
+            width: 100%;
+        }
+        
+        .user-actions {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+        }
+        
+        .btn {
+            padding: 10px 20px;
+            border-radius: 4px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            border: none;
+            outline: none;
+            font-size: 14px;
+        }
+        
+        .btn-primary {
+            background-color: var(--primary);
+            color: var(--white);
+        }
+        
+        .btn-primary:hover {
+            background-color: #0d5aa7;
+        }
+        
+        .btn-outline {
+            border: 1px solid var(--primary);
+            color: var(--primary);
+            background-color: transparent;
+        }
+        
+        .btn-outline:hover {
+            background-color: var(--primary-light);
+        }
+        
+        .hero {
+            background: linear-gradient(135deg, var(--primary-light), var(--secondary-light));
+            padding: 80px 0;
+            text-align: center;
+        }
+        
+        .hero h1 {
+            font-size: 2.5rem;
+            margin-bottom: 20px;
+            color: var(--primary);
+        }
+        
+        .hero p {
+            font-size: 1.2rem;
+            max-width: 700px;
+            margin: 0 auto 30px;
+            color: var(--text-light);
+        }
+        
+        .hero-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 30px;
+        }
+        
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 30px;
+            margin: 60px 0;
+        }
+        
+        .feature-card {
+            background-color: var(--white);
+            border-radius: 8px;
+            padding: 30px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            cursor: pointer;
+        }
+        
+        .feature-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+        }
+        
+        .feature-icon {
+            width: 60px;
+            height: 60px;
+            background-color: var(--primary-light);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 20px;
+            color: var(--primary);
+            font-size: 24px;
+        }
+        
+        .feature-card h3 {
+            margin-bottom: 15px;
+            font-size: 1.2rem;
+            color: var(--primary);
+        }
+        
+        .feature-card p {
+            color: var(--text-light);
+            font-size: 0.95rem;
+        }
+        
+        .appointment-section {
+            background-color: var(--white);
+            padding: 60px 0;
+            margin: 40px 0;
+        }
+        
+        .appointment-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 40px;
+            align-items: center;
+        }
+        
+        .appointment-content h2 {
+            font-size: 2rem;
+            margin-bottom: 20px;
+            color: var(--primary);
+        }
+        
+        .appointment-content p {
+            color: var(--text-light);
+            margin-bottom: 30px;
+        }
+        
+        .appointment-form {
+            background-color: var(--light-gray);
+            padding: 30px;
+            border-radius: 8px;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 500;
+            color: var(--text-dark);
+        }
+        
+        .form-control {
+            width: 100%;
+            padding: 10px 15px;
+            border: 1px solid var(--border);
+            border-radius: 4px;
+            font-size: 14px;
+            transition: border-color 0.3s ease;
+        }
+        
+        .form-control:focus {
+            border-color: var(--primary);
+            outline: none;
+        }
+        
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+        
+        .services-section {
+            padding: 60px 0;
+        }
+        
+        .section-header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+        
+        .section-header h2 {
+            font-size: 2rem;
+            color: var(--primary);
+            margin-bottom: 15px;
+        }
+        
+        .section-header p {
+            color: var(--text-light);
+            max-width: 700px;
+            margin: 0 auto;
+        }
+        
+        .services-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 20px;
+        }
+        
+        .service-card {
+            background-color: var(--white);
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+            transition: transform 0.3s ease;
+        }
+        
+        .service-card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .service-img {
+            height: 200px;
+            background-color: var(--primary-light);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--primary);
+            font-size: 36px;
+        }
+        
+        .service-content {
+            padding: 20px;
+        }
+        
+        .service-content h3 {
+            margin-bottom: 10px;
+            font-size: 1.1rem;
+            color: var(--text-dark);
+        }
+        
+        .service-content p {
+            color: var(--text-light);
+            font-size: 0.9rem;
+            margin-bottom: 15px;
+        }
+        
+        .testimonials-section {
+            background-color: var(--primary-light);
+            padding: 60px 0;
+        }
+        
+        .testimonials-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 30px;
+        }
+        
+        .testimonial-card {
+            background-color: var(--white);
+            border-radius: 8px;
+            padding: 30px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+        }
+        
+        .testimonial-text {
+            font-style: italic;
+            color: var(--text-light);
+            margin-bottom: 20px;
+            position: relative;
+        }
+        
+        .testimonial-text::before {
+            content: '"';
+            font-size: 60px;
+            color: var(--primary-light);
+            position: absolute;
+            top: -20px;
+            left: -10px;
+            opacity: 0.5;
+        }
+        
+        .testimonial-author {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .author-avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background-color: var(--primary-light);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--primary);
+            font-weight: bold;
+        }
+        
+        .author-details h4 {
+            font-size: 1rem;
+            margin-bottom: 5px;
+        }
+        
+        .author-details p {
+            font-size: 0.85rem;
+            color: var(--text-light);
+        }
+        
+        .cta-section {
+            text-align: center;
+            padding: 80px 0;
+            background: linear-gradient(135deg, var(--primary), #0d5aa7);
+            color: var(--white);
+        }
+        
+        .cta-section h2 {
+            font-size: 2.2rem;
+            margin-bottom: 20px;
+        }
+        
+        .cta-section p {
+            max-width: 700px;
+            margin: 0 auto 30px;
+            opacity: 0.9;
+        }
+        
+        .btn-light {
+            background-color: var(--white);
+            color: var(--primary);
+        }
+        
+        .btn-light:hover {
+            background-color: var(--light-gray);
+        }
+        
+        footer {
+            background-color: #1e1e1e;
+            color: var(--white);
+            padding: 60px 0 0;
+        }
+        
+        .footer-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr 1fr;
+            gap: 40px;
+            margin-bottom: 40px;
+        }
+        
+        .footer-col h3 {
+            font-size: 1.2rem;
+            margin-bottom: 20px;
+            color: var(--white);
+        }
+        
+        .footer-col p {
+            color: rgba(255,255,255,0.7);
+            margin-bottom: 20px;
+            font-size: 0.9rem;
+        }
+        
+        .footer-links {
+            list-style: none;
+        }
+        
+        .footer-links li {
+            margin-bottom: 10px;
+        }
+        
+        .footer-links li a {
+            color: rgba(255,255,255,0.7);
+            text-decoration: none;
+            font-size: 0.9rem;
+            transition: color 0.3s ease;
+        }
+        
+        .footer-links li a:hover {
+            color: var(--white);
+        }
+        
+        .social-links {
+            display: flex;
+            gap: 15px;
+            margin-top: 20px;
+        }
+        
+        .social-icon {
+            width: 36px;
+            height: 36px;
+            background-color: rgba(255,255,255,0.1);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background-color 0.3s ease;
+        }
+        
+        .social-icon:hover {
+            background-color: rgba(255,255,255,0.2);
+        }
+        
+        .copyright {
+            text-align: center;
+            padding: 20px 0;
+            border-top: 1px solid rgba(255,255,255,0.1);
+            color: rgba(255,255,255,0.5);
+            font-size: 0.85rem;
+        }
+        
+        @media (max-width: 992px) {
+            .features-grid, .services-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .footer-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+            
+            .testimonials-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .header-container {
+                flex-direction: column;
+                gap: 15px;
+            }
+            
+            nav ul {
+                gap: 15px;
+            }
+            
+            .appointment-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .features-grid, .services-grid, .footer-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .hero h1 {
+                font-size: 2rem;
+            }
+            
+            .hero p {
+                font-size: 1rem;
+            }
+            
+            .hero-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container header-container">
+            <div class="logo">
+                <div class="logo-icon">M</div>
+                <span>CureConnect</span>
+            </div>
+            <nav>
+                <ul>
+                    <li><a href="#features">Features</a></li>
+                    <li><a href="#services">Services</a></li>
+                    <li><a href="#appointment">Appointments</a></li>
+                    <li><a href="#contact">Contact</a></li>
+                </ul>
+            </nav>
+            <div class="user-actions">
+                <a href="doctor.html" class="btn btn-outline">Doctor Login</a>
+                <a href="patient.html" class="btn btn-primary">Patient Login</a>
+            </div>
+        </div>
+    </header>
+    
+    <section class="hero">
+        <div class="container">
+            <h1>Complete Healthcare Management Solution</h1>
+            <p>Streamline your medical practice with our comprehensive healthcare platform. From electronic health records to appointment scheduling, we've got you covered.</p>
+            <div class="hero-buttons">
+                <a href="patient.html" class="btn btn-primary">Schedule Appointment</a>
+                <a href="#features" class="btn btn-outline">Explore Features</a>
+            </div>
+        </div>
+    </section>
+    
+    <section id="features" class="container">
+        <div class="section-header">
+            <h2>Our Platform Features</h2>
+            <p>CureConnect offers a comprehensive suite of tools designed to streamline healthcare management</p>
+        </div>
+        <div class="features-grid">
+            <div class="feature-card">
+                <div class="feature-icon">EHR</div>
+                <h3>Electronic Health Records</h3>
+                <p>Securely manage and access patient records with our intuitive, HIPAA-compliant electronic health record system.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">AS</div>
+                <h3>Appointment Scheduling</h3>
+                <p>Easily manage appointments, reduce no-shows with automated reminders, and optimize your practice schedule.</p>
+            </div>
+            
+            <div class="feature-card">
+                <div class="feature-icon">RM</div>
+                <h3>Disease Prediction</h3>
+                <p>Disease prediction using ML analyzes patient data (symptoms, medical history) with trained models. </p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">PH</div>
+                <h3>Pharmacy Integration</h3>
+                <p>E-prescribing, medication management, and direct pharmacy communication for better patient outcomes.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">RM</div>
+                <h3>After Appointment Care</h3>
+                <p>After appointment care is a feature that allows patients to receive care after their appointment. Such as direct chat with doctor, and other related services. </p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">PH</div>
+                <h3>Agentic Services</h3>
+                <p>Agentic services are a feature that allows patients to receive care from a virtual agent. Such as booking appointments, and other related services. </p>
+            </div>
+        </div>
+    </section>
+    
+    <!-- <section id="appointment" class="appointment-section">
+        <div class="container">
+            <div class="appointment-grid">
+                <div class="appointment-content">
+                    <h2>Schedule Your Appointment</h2>
+                    <p>Book your next medical appointment in minutes. Our streamlined scheduling system allows you to choose the right provider, time, and location that works best for you.</p>
+                    <ul>
+                        <li>Choose your preferred healthcare provider</li>
+                        <li>Select a convenient date and time</li>
+                        <li>Receive appointment confirmation via email or SMS</li>
+                        <li>Get automated reminders before your appointment</li>
+                    </ul>
+                </div>
+                <div class="appointment-form">
+                    <form>
+                        <div class="form-group">
+                            <label for="service">Service Type</label>
+                            <select id="service" class="form-control">
+                                <option>Select Service</option>
+                                <option>Primary Care</option>
+                                <option>Specialist Consultation</option>
+                                <option>Preventive Checkup</option>
+                                <option>Vaccination</option>
+                                <option>Lab Work</option>
+                            </select>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="date">Preferred Date</label>
+                                <input type="date" id="date" class="form-control">
+                            </div>
+                            <div class="form-group">
+                                <label for="time">Preferred Time</label>
+                                <select id="time" class="form-control">
+                                    <option>Morning (9AM - 12PM)</option>
+                                    <option>Afternoon (12PM - 3PM)</option>
+                                    <option>Evening (3PM - 6PM)</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="provider">Healthcare Provider</label>
+                            <select id="provider" class="form-control">
+                                <option>Any Available Provider</option>
+                                <option>Dr. Sarah Lee</option>
+                                <option>Dr. Ali Smith</option>
+                                <option>Dr. Robert Brown</option>
+                                <option>Dr. Mark Green</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="notes">Additional Notes</label>
+                            <textarea id="notes" class="form-control" rows="3" placeholder="Any specific concerns or requirements?"></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-primary" style="width: 100%;">Schedule Appointment</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>-->
+    
+    <section id="services" class="services-section">
+        <div class="container">
+            <div class="section-header">
+                <h2>Our Healthcare Services</h2>
+                <p>CureConnect provides comprehensive healthcare services for patients of all ages</p>
+            </div>
+            <div class="services-grid">
+                <div class="service-card">
+                    <div class="service-img">PC</div>
+                    <div class="service-content">
+                        <h3>Primary Care</h3>
+                        <p>Comprehensive primary healthcare services for the entire family, from regular checkups to chronic illness management.</p>
+                        <a href="#" class="btn btn-outline">Learn More</a>
+                    </div>
+                </div>
+                <div class="service-card">
+                    <div class="service-img">SC</div>
+                    <div class="service-content">
+                        <h3>Specialist Care</h3>
+                        <p>Access to a network of specialists across all medical fields to provide specialized treatments and consultations.</p>
+                        <a href="#" class="btn btn-outline">Learn More</a>
+                    </div>
+                </div>
+                <div class="service-card">
+                    <div class="service-img">PH</div>
+                    <div class="service-content">
+                        <h3>Pharmacy</h3>
+                        <p>Integrated pharmacy services with prescription management, refills, and medication delivery options.</p>
+                        <a href="#" class="btn btn-outline">Learn More</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <section class="testimonials-section">
+        <div class="container">
+            <div class="section-header">
+                <h2>What Our Clients Say</h2>
+                <p>Hear from healthcare providers who have transformed their practice with MediConnect</p>
+            </div>
+            <div class="testimonials-grid">
+                <div class="testimonial-card">
+                    <div class="testimonial-text">
+                        CureConnect has revolutionized our practice management. The EHR system is intuitive, and the appointment scheduling has reduced our no-show rate by 60%.
+                    </div>
+                    <div class="testimonial-author">
+                        <div class="author-avatar">DR</div>
+                        <div class="author-details">
+                            <h4>Dr. Robert Smith</h4>
+                            <p>Family Practice, Chicago</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="testimonial-card">
+                    <div class="testimonial-text">
+                        The revenue management tools have significantly improved our billing efficiency. We've seen a 40% reduction in claim denials since implementing MediConnect.
+                    </div>
+                    <div class="testimonial-author">
+                        <div class="author-avatar">JD</div>
+                        <div class="author-details">
+                            <h4>Jennifer Davis</h4>
+                            <p>Practice Manager, Boston Medical</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="testimonial-card">
+                    <div class="testimonial-text">
+                        Our patients love the telehealth feature. It's seamlessly integrated with our records system, making remote consultations as effective as in-person visits.
+                    </div>
+                    <div class="testimonial-author">
+                        <div class="author-avatar">TM</div>
+                        <div class="author-details">
+                            <h4>Dr. Thomas Miller</h4>
+                            <p>Pediatric Specialist, San Francisco</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <section class="cta-section">
+        <div class="container">
+            <h2>Ready to Transform Your Healthcare Practice?</h2>
+            <p>Join thousands of healthcare providers who have streamlined their operations and improved patient care with MediConnect.</p>
+            <a href="#" class="btn btn-light">Request a Demo</a>
+        </div>
+    </section>
+    
+    <footer id="contact">
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-col">
+                    <h3>About CureConnect</h3>
+                    <p>CureConnect is a comprehensive healthcare platform designed to streamline medical practices and improve patient care through integrated digital solutions.</p>
+                    <div class="social-links">
+                        <a href="#" class="social-icon">F</a>
+                        <a href="#" class="social-icon">T</a>
+                        <a href="#" class="social-icon">L</a>
+                        <a href="#" class="social-icon">I</a>
+                    </div>
+                </div>
+                <div class="footer-col">
+                    <h3>Features</h3>
+                    <ul class="footer-links">
+                        <li><a href="#">Electronic Health Records</a></li>
+                        <li><a href="#">Appointment Scheduling</a></li>
+                        <li><a href="#">Telehealth Services</a></li>
+                        <li><a href="#">Pharmacy Integration</a></li>
+                    </ul>
+                </div>
+                <div class="footer-col">
+                    <h3>Resources</h3>
+                    <ul class="footer-links">
+                        <li><a href="#">Help Center</a></li>
+                        <li><a href="#">Documentation</a></li>
+                        <li><a href="#">API Reference</a></li>
+                        <li><a href="#">Webinars</a></li>
+                        <li><a href="#">Training Videos</a></li>
+                        <li><a href="#">Blog</a></li>
+                    </ul>
+                </div>
+                <div class="footer-col">
+                    <h3>Contact Us</h3>
+                    <ul class="footer-links">
+                        <li>123 Medical Drive</li>
+                        <li>San Francisco, CA 94105</li>
+                        <li>support@cureconnect.com</li>
+                        <li>(800) 555-7890</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="copyright">
+                © 2025 CureConnect. All rights reserved.
+            </div>
+        </div>
+    </footer>
+</body>
+</html>

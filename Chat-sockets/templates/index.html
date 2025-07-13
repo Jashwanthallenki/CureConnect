@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Doctor-Patient Chat</title>
+</head>
+<body>
+    <h1>Real-Time Doctor-Patient Chat</h1>
+
+    <!-- Role selection form -->
+    <div id="roleSelection">
+        <h3>Select Your Role:</h3>
+        <button onclick="setRole('Doctor')">Doctor</button>
+        <button onclick="setRole('Patient')">Patient</button>
+    </div>
+
+    <div id="chatWindow" style="display:none;">
+        <h3>Role: <span id="role"></span></h3>
+        <h3>Chat Room: <span id="roomId">Room 123</span></h3>
+        <textarea id="chat" rows="10" cols="50" readonly></textarea><br>
+        <input type="text" id="messageInput" />
+        <button onclick="sendMessage()">Send</button>
+    </div>
+
+    <script src="https://cdn.socket.io/4.0.0/socket.io.min.js"></script>
+    <script>
+        var socket = io.connect('http://' + document.domain + ':' + location.port);
+
+        var username = "user";  // Placeholder for username, can be dynamically set
+        var role = "";  // Role (Doctor or Patient)
+        var roomId = "Room123";  // Unique room identifier for chat
+
+        // Function to select the role
+        function setRole(selectedRole) {
+            role = selectedRole;
+            username = selectedRole.toLowerCase() + "1";  // Dynamic username based on role
+            document.getElementById("role").textContent = role;
+
+            // Hide role selection and show chat window
+            document.getElementById("roleSelection").style.display = "none";
+            document.getElementById("chatWindow").style.display = "block";
+
+            // Join the chat room as selected user (Doctor/Patient)
+            socket.emit('join', {'username': username, 'role': role, 'room_id': roomId});
+        }
+
+        // Listen for incoming messages
+        socket.on('message', function(msg) {
+            document.getElementById("chat").value += msg.data + '\n';
+        });
+
+        // Send a message to the server
+        function sendMessage() {
+            var message = document.getElementById("messageInput").value;
+            if (message.trim()) {
+                socket.send({
+                    'message': message,
+                    'room_id': roomId,
+                    'username': username
+                });
+                document.getElementById("messageInput").value = '';  // Clear input after sending
+            }
+        }
+    </script>
+</body>
+</html>
